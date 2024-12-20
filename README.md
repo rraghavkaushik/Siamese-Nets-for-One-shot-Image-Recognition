@@ -22,8 +22,7 @@ c) provide a competitive approach that does not rely upon domain-specific knowle
 ### Model
 
  - The stride is fixed to be 1 always.
- - Loss Function: A regularized cross-entropy function is used
-<img width="564" alt="image" src="https://github.com/user-attachments/assets/a5fe52ba-0ac5-4930-9b3c-c69b33b89182" />
+ - Loss Function: A regularized cross-entropy function is used. <img width="564" alt="image" src="https://github.com/user-attachments/assets/a5fe52ba-0ac5-4930-9b3c-c69b33b89182" />
  - Rectified linear (ReLU) units in the first L − 2 layers and sigmoidal units in the remaining layers.
  - The max pooling layer's filter size and stride is 2.
  - The weighted L1 distance is used between the twin feature vectors h and h combined with 12
