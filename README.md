@@ -15,9 +15,13 @@ a) are capable of learning generic image features useful for making predictions 
 b) are easily trained using standard optimization techniques on pairs sampled from the source data and 
 c) provide a competitive approach that does not rely upon domain-specific knowledge by instead exploiting deep learning techniques.
 
+(Note: Feature here means a transformation of data that is useful for learning)
+
 ### Architecture
 
 <img width="521" alt="image" src="https://github.com/user-attachments/assets/67e5a298-245c-4ecd-8eea-de761c9a8b06" />
+
+x -> Conv Layers -> 
 
 ### Model
 
@@ -25,10 +29,10 @@ c) provide a competitive approach that does not rely upon domain-specific knowle
  - Loss Function: A regularized cross-entropy function is used. <img width="564" alt="image" src="https://github.com/user-attachments/assets/a5fe52ba-0ac5-4930-9b3c-c69b33b89182" />
  - Rectified linear (ReLU) units in the first L − 2 layers and sigmoidal units in the remaining layers.
  - The max pooling layer's filter size and stride is 2.
- - The weighted L1 distance is used between the twin feature vectors h and h combined with 12
-a sigmoid activation, which maps onto the interval [0, 1].
+ - The weighted L1 distance is used between the twin feature vectors h1 and h2 combined with a sigmoid activation, which maps onto the interval [0, 1].
  - All network weights in the convolutional layers from a normal distribution with zero-mean and a standard deviation of 0.01.
  - Biases were also initialized from a normal distribution, but with mean 0.5 and standard deviation 0.01.
+ - In the fully connected layer, the weights were drawn from a much wider normal distribution with zero-mean and a standard deviation of of 0.02, but the biases were intialized in the same way.
  - Learning rates are decayed uniformly across the network by 1 percent per epoch.
 
 
@@ -36,6 +40,11 @@ a sigmoid activation, which maps onto the interval [0, 1].
    
 ### Dataset
 <img width="533" alt="image" src="https://github.com/user-attachments/assets/b7ebc373-6c6b-4c2a-a7a9-760be5bc9223" />
+The Omniglot dataset is a collection of 1623 hand drawn characters from 50 alphabets. For every character there are just 20 examples, each drawn by a different person at resolution 105x105.
+
+The number of letters in each alphabet varies considerably from about 15 to upwards of 40 characters. All characters across these alphabets are produced a single time by each of 20 drawers Lake split the data into a 40 alphabet background set and a 10 alphabet evaluation set.
+
+(Note: Here the background set and training set are not the same, refer to the paper section 4.1 for more information)
 
 ### Affline Distortion
 In the training set, the images are augmented using small affline distortions and the new transformations were determined stochastically by a multidimensional uniform distribution (every component of the trasformation is included with a probability of 0.5).
