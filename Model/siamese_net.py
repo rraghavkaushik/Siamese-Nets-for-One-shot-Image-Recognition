@@ -13,6 +13,8 @@ import keras.backend as bknd
 np.random.seed(42)
 random.seed(42)
     
+
+def     
     
 def l1_distance(h1, h2):
 
