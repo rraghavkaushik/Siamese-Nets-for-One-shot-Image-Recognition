@@ -65,6 +65,12 @@ def transform(image):
 
     return image
 
+def pkl_data(filename):
+
+    with open(filename, 'rb') as f:
+        X_t, y_t = pkl.load(f)
+    
+    return X_t, y_t
 
 def l1_distance(h1, h2):
 
@@ -160,12 +166,14 @@ class DataGenerator:
         
 
 class model():
+
     def __init__(self, initial_lr = 0.001, batch_size = 32):
         self.lr = initial_lr
         self.batch_size = batch_size()
         self.siamese_net()
 
     def siamese_net(self):
+
         W_init = RandomNormal(mean = 0, stddev = 0.01)
         b_init = RandomNormal(mean = 0.5, stddev = 0.01)
         W_init_fc = RandomNormal(mean = 0, stddev = 0.02)
@@ -197,6 +205,39 @@ class model():
 
         self.model.compile(loss = 'binary_crossentropy', optimizer = opt, metrics = ["accuracy"])
 
+
+    def test_one_shot(self, X_left, X_right, y):
+
+        prob = self.model.predict(X_left, X_right)
+        return 1 if np.argmax(prob) == np.argmax(y) else 0
+
+
+    def test_pairs(self, file_name, n_way = 20):
+
+        correct_pred = 0
+        X, y = pkl_data(file_name)
+
+        j = 0
+        for i in range(0, len(X), n_way):
+
+            X_left, X_right, y = X[i : i + n_way, 0], X[i : i + n_way, 1], y[i : i + n_way]
+
+            X_left, X_right, y = np.array(X_left), np.array(X_right), np.array(y)
+
+            correct_pred += self.test_one_shot(X_left, X_right, y)
+
+        n = len(X) / n_way
+        accuracy = correct_pred * 100 / n
+
+        return accuracy
+    
+
+
+
+
+if __name__ == "__main__":
+
+    model = model(batch_size = 32)
 
 
 
