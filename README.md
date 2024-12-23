@@ -1,4 +1,7 @@
 # One-Shot-Image-Recognition
+
+(In development🙃)
+
 Implementation of the paper "Siamese Neural Networks for One-shot Image Recognition". 
 
 You can find the paper here "https://www.cs.cmu.edu/~rsalakhu/papers/oneshot1.pdf"
