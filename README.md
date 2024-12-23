@@ -46,10 +46,11 @@ The number of letters in each alphabet varies considerably from about 15 to upwa
 
 (Note: Here the background set and training set are not the same, refer to the paper section 4.1 for more information)
 
-### Affline Distortion
+### Affine Distortion
 In the training set, the images are augmented using small affline distortions and the new transformations were determined stochastically by a multidimensional uniform distribution (every component of the trasformation is included with a probability of 0.5).
 
-
+### One-shot Learning
+To empirically evaluate one-shot learning performance, Lake developed a 20-way within-alphabet classification task in which an alphabet is first chosen from among those reserved for the evaluation set, along with twenty charac- ters taken uniformly at random
 
 
 (All information presented here is inspired from the above mentioned paper)
