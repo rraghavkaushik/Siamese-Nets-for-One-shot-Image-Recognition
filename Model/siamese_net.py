@@ -4,6 +4,7 @@ import tensorflow as tf
 import random
 import pickle as pkl
 import matplotlib.image as img
+import time
 
 from skimage.transform import AffineTransform, warp, rotate
 from sklearn.utils import shuffle
@@ -230,6 +231,31 @@ class model():
         accuracy = correct_pred * 100 / n
 
         return accuracy
+    
+    def test_validation_accuracy(self, wA_file, uA_file, n_way = 20):
+
+        accuracy_wA = self.test_pairs(wA_file, n_way)
+        accuracy_uA = self.test_pairs(uA_file, n_way)
+        return accuracy_wA, accuracy_uA
+
+    def train(self, load_model = False, best_accuracy = 0):
+
+        with open("model.json", "w") as f:
+            f.write(self.model.to_json())
+
+        self.best_acc = best_accuracy
+        self.val_acc = []
+
+        # if load_model == "True":
+
+        data_generator = DataGenerator(self.batch_size, augment = True)
+        train_generator = DataGenerator.load_batch()
+
+        
+        
+            
+        
+
     
 
 
