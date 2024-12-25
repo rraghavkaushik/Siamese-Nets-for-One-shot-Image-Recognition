@@ -5,6 +5,7 @@ import random
 import pickle as pkl
 import matplotlib.image as img
 import time
+import keras.backend as bknd
 
 from skimage.transform import AffineTransform, warp, rotate
 from sklearn.utils import shuffle
@@ -14,8 +15,8 @@ from keras import Sequential, Model
 from keras.initializers import RandomNormal
 from keras.regularizers import l2
 from keras.optimizers import SGD
-import keras.backend as bknd
 
+from statistics import mean
 # from keras.activations import ReLU
 
 np.random.seed(42)
@@ -240,25 +241,68 @@ class model():
 
     def train(self, load_model = False, best_accuracy = 0):
 
+        wA_file = ''
+        uA_file = ''
+
         with open("model.json", "w") as f:
             f.write(self.model.to_json())
 
         self.best_acc = best_accuracy
         self.val_acc = []
+        self.train_metrics = []
+        self.bknd = 0
+        self.start = 1
+        self.model_details = {'acc': 0, 'iter': 0, 
+                              'model_lr': 0.0, 'model_mm': 0.0}
+        self.val_acc_filename = 'val_acc'
+
 
         # if load_model == "True":
 
         data_generator = DataGenerator(self.batch_size, augment = True)
         train_generator = DataGenerator.load_batch()
 
-        
-        
-            
-        
+        for i in range(self.start, 1000000):
+            start_time = time.time()
+            X_batch, y_batch = next(train_generator)
+            loss = self.train(X_batch, y_batch)
+            train_loss, train_acc = loss[0], loss[1]
 
+            self.train_metrics.append([train_loss, train_acc])
+
+            if i % 500:
+
+                avg_train_loss = mean([metric[0] for metric in self.train_metrics])
+                avg_train_acc = mean([metric[1] for metric in self.train_metrics])
+
+                val_acc = self.test_validation_accuracy(wA_file, uA_file, n_way = 20)
+                self.v_acc.append(val_acc)
+
+                if val_acc[0] > self.best_accuracy:
+                    print("\n***Saving model***\n")
+                    self.model.save_weights("best_model/best_model.h5")
+                    self.model_details.update({
+                        'acc': val_acc[0],
+                        'iter': i,
+                        'model_lr': bknd.get_value(self.model.optimizer.learning_rate),
+                        'model_mm': bknd.get_value(self.model.optimizer.momentum)
+                    })
+                    self.best_acc = val_acc[0]
+
+                    with open(self.val_acc_filename, 'wb') as f:
+                        pkl.dump((self.v_acc, self.train_metrics), f)
+                    with open('best_model/model_details.pkl', 'wb') as f:
+                        pkl.dump(self.model_details, f)
+
+                end_time = time.time()
+                print(f"Iteration: {i}  lr : {bknd.get_value(self.model.optimizer.learning_rate):.8f} "
+                      f"momentum: {bknd.get_value(self.model.optimizer.momentum):.6f} avg_loss: {avg_train_loss:.4f} "
+                      f"avg_acc: {avg_train_acc:.4f} wA_acc: {val_acc[0]:.2f}% uA_acc: {val_acc[1]:.2f}% "
+                      f"time_taken: {end_time - start_time:.2f}s"
+                )
+
+                self.train_metrics = []
     
-
-
 
 
 if __name__ == "__main__":
